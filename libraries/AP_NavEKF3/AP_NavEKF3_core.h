@@ -30,6 +30,7 @@
 #include <AP_Math/AP_Math.h>
 #include <AP_Math/vectorN.h>
 #include <AP_NavEKF/AP_NavEKF_core_common.h>
+#include <AP_NavEKF/AP_NavEKF_Source.h>
 #include <AP_NavEKF3/AP_NavEKF3_Buffer.h>
 #include <AP_InertialSensor/AP_InertialSensor.h>
 #include <GCS_MAVLink/GCS_MAVLink.h>
@@ -1487,4 +1488,9 @@ private:
     uint8_t EKFGSF_yaw_reset_count;         // number of emergency yaw resets performed
     bool EKFGSF_run_filterbank;             // true when the filter bank is active
     uint8_t EKFGSF_yaw_valid_count;         // number of updates since the last invalid yaw estimate
+
+    // source reset handling
+    AP_NavEKF_Source::SourceXY pos_source_last;   // position source on previous iteration (used to detect a changes)
+    bool pos_source_reset;                  // true when the position source has changed but the position has not yet been reset
+
 };

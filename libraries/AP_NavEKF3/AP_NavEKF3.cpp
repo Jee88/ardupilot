@@ -129,12 +129,7 @@ const AP_Param::GroupInfo NavEKF3::var_info[] = {
 
     // GPS measurement parameters
 
-    // @Param: GPS_TYPE
-    // @DisplayName: GPS mode control
-    // @Description: This controls use of GPS measurements : 0 = use 3D velocity & 2D position, 1 = use 2D velocity and 2D position, 2 = use 2D position, 3 = Inhibit GPS use - this can be useful when flying with an optical flow sensor in an environment where GPS quality is poor and subject to large multipath errors.
-    // @Values: 0:GPS 3D Vel and 2D Pos, 1:GPS 2D vel and 2D pos, 2:GPS 2D pos, 3:No GPS
-    // @User: Advanced
-    AP_GROUPINFO("GPS_TYPE", 1, NavEKF3, _fusionModeGPS, 0),
+    // 1 was GPS_TYPE
 
     // @Param: VELNE_M_NSE
     // @DisplayName: GPS horizontal velocity measurement noise (m/s)
@@ -639,6 +634,10 @@ const AP_Param::GroupInfo NavEKF3::var_info[] = {
     // @RebootRequired: True
     AP_GROUPINFO("GSF_RST_MAX", 60, NavEKF3, _gsfResetMaxCount, 2),
 
+    // @Group: SRC_
+    // @Path: ../AP_NavEKF/AP_NavEKF_Source.cpp
+    AP_SUBGROUPINFO(_sources, "SRC_", 61, NavEKF3, AP_NavEKF_Source),
+
     AP_GROUPEND
 };
 
@@ -689,7 +688,10 @@ bool NavEKF3::InitialiseFilter(void)
 
     // expected number of IMU frames per prediction
     _framesPerPrediction = uint8_t((EKF_TARGET_DT / (_frameTimeUsec * 1.0e-6) + 0.5));
-    
+
+    // initialise sources
+    _sources.init();
+
     if (core == nullptr) {
 
         // see if we will be doing logging
@@ -904,6 +906,12 @@ void NavEKF3::requestYawReset(void)
     for (uint8_t i = 0; i < num_cores; i++) {
         core[primary].EKFGSF_requestYawReset();
     }
+}
+
+// set position source to either 0=primary or 1=secondary
+void NavEKF3::setPositionSource(uint8_t source_idx)
+{
+    _sources.setPosVelXYZSource(source_idx);
 }
 
 // Check basic filter health metrics and return a consolidated health status
@@ -1172,7 +1180,7 @@ bool NavEKF3::setOriginLLH(const Location &loc)
     if (!core) {
         return false;
     }
-    if (_fusionModeGPS != 3) {
+    if (_sources.getPosXYSource() != AP_NavEKF_Source::SourceXY::EXTNAV) {
         // we don't allow setting of the EKF origin unless we are
         // flying in non-GPS mode. This is to prevent accidental set
         // of EKF origin with invalid position or height
