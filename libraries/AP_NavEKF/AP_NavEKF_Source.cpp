@@ -49,6 +49,13 @@ const AP_Param::GroupInfo AP_NavEKF_Source::var_info[] = {
     // @User: Advanced
     AP_GROUPINFO("VELZ", 4, AP_NavEKF_Source, _velz_source1, 3),
 
+    // @Param: YAW
+    // @DisplayName: Yaw Source
+    // @Description: Yaw Source
+    // @Values: 0:None, 1:Compass, 2:External, 3:External with Compass Fallback
+    // @User: Advanced
+    AP_GROUPINFO("YAW", 5, AP_NavEKF_Source, _yaw_source1, 1),
+
     // @Param: POSXY2
     // @DisplayName: Position Horizontal Source (Secondary)
     // @Description: Position Horizontal Source (Secondary)
@@ -77,6 +84,13 @@ const AP_Param::GroupInfo AP_NavEKF_Source::var_info[] = {
     // @User: Advanced
     AP_GROUPINFO("VELZ2", 9, AP_NavEKF_Source, _velz_source2, 3),
 
+    // @Param: YAW2
+    // @DisplayName: Yaw Source (Secondary)
+    // @Description: Yaw Source (Secondary)
+    // @Values: 0:None, 1:Compass, 2:External, 3:External with Compass Fallback
+    // @User: Advanced
+    AP_GROUPINFO("YAW2", 10, AP_NavEKF_Source, _yaw_source2, 1),
+
     AP_GROUPEND
 };
 
@@ -97,6 +111,7 @@ void AP_NavEKF_Source::init()
     _active_velxy_source = (SourceXY)_velxy_source1.get();
     _active_posz_source = (SourceZ)_posz_source1.get();
     _active_velz_source = (SourceZ)_velz_source1.get();
+    _active_yaw_source = (SourceYaw)_yaw_source1.get();
 
     _initialised = true;
 }
@@ -111,6 +126,7 @@ void AP_NavEKF_Source::setPosVelXYZSource(uint8_t source_idx)
     _active_velxy_source = (source_idx == 1 ? (SourceXY)_velxy_source2.get() : (SourceXY)_velxy_source1.get());
     _active_posz_source = (source_idx == 1 ? (SourceZ)_posz_source2.get() : (SourceZ)_posz_source1.get());
     _active_velz_source = (source_idx == 1 ? (SourceZ)_velz_source2.get() : (SourceZ)_velz_source1.get());
+    _active_yaw_source = (source_idx == 1 ? (SourceYaw)_yaw_source2.get() : (SourceYaw)_yaw_source1.get());
 }
 
 // sensor specific helper functions

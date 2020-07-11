@@ -32,6 +32,13 @@ public:
         EXTNAV = 5
     };
 
+    enum class SourceYaw {
+        NONE = 0,
+        COMPASS = 1,
+        EXTERNAL = 2,
+        EXTERNAL_COMPASS_FALLBACK = 3
+    };
+
     // initialisation
     void init();
 
@@ -47,6 +54,9 @@ public:
     SourceZ getVelZSource() const { return _initialised ? _active_velz_source : (SourceZ)_velz_source1.get(); }
     void setVelZSource(SourceZ source) { _active_velz_source = source; }
 
+    // get yaw source
+    SourceYaw getYawSource() const { return _initialised ? _active_yaw_source : (SourceYaw)_yaw_source1.get(); }
+
     // sensor specific helper functions
 
     // true if any source is GPS
@@ -61,10 +71,12 @@ private:
     AP_Int8 _velxy_source1;     // primary xy velocity source
     AP_Int8 _posz_source1;      // primary position z (aka altitude or height) source
     AP_Int8 _velz_source1;      // primary velocity z source
+    AP_Int8 _yaw_source1;       // primary yaw source
     AP_Int8 _posxy_source2;     // secondary xy position source
     AP_Int8 _velxy_source2;     // secondary xy velocity source
     AP_Int8 _posz_source2;      // position z (aka altitude or height) source
-    AP_Int8 _velz_source2;      // primary velocity z source
+    AP_Int8 _velz_source2;      // secondary velocity z source
+    AP_Int8 _yaw_source2;       // secondary yaw source
 
     // active sources
     bool _initialised;                      // true once init has been run
@@ -72,4 +84,5 @@ private:
     SourceZ _active_posz_source;      // current z position source
     SourceXY _active_velxy_source;    // current xy velocity source
     SourceZ _active_velz_source;      // current z velocity source
+    SourceYaw _active_yaw_source;     // current yaw source
 };
