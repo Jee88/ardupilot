@@ -45,7 +45,7 @@ const AP_Param::GroupInfo AP_NavEKF_Source::var_info[] = {
     // @Param: VELZ
     // @DisplayName: Velocity Vertical Source
     // @Description: Velocity Vertical Source
-    // @Values: 0:None, 1:Baro, 2:RangeFinder, 3:GPS, 4:Beacon, 5:ExternalNav
+    // @Values: 0:None, 3:GPS, 4:Beacon, 5:ExternalNav
     // @User: Advanced
     AP_GROUPINFO("VELZ", 4, AP_NavEKF_Source, _velz_source1, 3),
 
@@ -80,7 +80,7 @@ const AP_Param::GroupInfo AP_NavEKF_Source::var_info[] = {
     // @Param: VELZ2
     // @DisplayName: Velocity Vertical Source (Secondary)
     // @Description: Velocity Vertical Source (Secondary)
-    // @Values: 0:None, 1:Baro, 2:RangeFinder, 3:GPS, 4:Beacon, 5:ExternalNav
+    // @Values: 0:None, 3:GPS, 4:Beacon, 5:ExternalNav
     // @User: Advanced
     AP_GROUPINFO("VELZ2", 9, AP_NavEKF_Source, _velz_source2, 3),
 
