@@ -64,6 +64,9 @@ public:
     // true if any source is GPS
     bool usingGPS() const;
 
+    // true if any primary source parameters have been configured (used for parameter conversion)
+    bool params_configured_in_storage() const;
+
     static const struct AP_Param::GroupInfo var_info[];
 
 private:
