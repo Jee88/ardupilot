@@ -26,70 +26,70 @@ const AP_Param::GroupInfo AP_NavEKF_Source::var_info[] = {
     // @Description: Position Horizontal Source (Primary)
     // @Values: 0:None, 1:GPS, 2:Beacon, 4:ExternalNav
     // @User: Advanced
-    AP_GROUPINFO("POSXY", 1, AP_NavEKF_Source, _posxy_source1, 1),
+    AP_GROUPINFO("POSXY", 1, AP_NavEKF_Source, _source[0].posxy, (int8_t)AP_NavEKF_Source::SourceXY::GPS),
 
     // @Param: VELXY
     // @DisplayName: Velocity Horizontal Source
     // @Description: Velocity Horizontal Source
     // @Values: 0:None, 1:GPS, 2:Beacon, 3:OpticalFlow, 4:ExternalNav
     // @User: Advanced
-    AP_GROUPINFO("VELXY", 2, AP_NavEKF_Source, _velxy_source1, 1),
+    AP_GROUPINFO("VELXY", 2, AP_NavEKF_Source, _source[0].velxy, (int8_t)AP_NavEKF_Source::SourceXY::GPS),
 
     // @Param: POSZ
     // @DisplayName: Position Vertical Source
     // @Description: Position Vertical Source
     // @Values: 0:None, 1:Baro, 2:RangeFinder, 3:GPS, 4:Beacon, 5:ExternalNav
     // @User: Advanced
-    AP_GROUPINFO("POSZ", 3, AP_NavEKF_Source, _posz_source1, 1),
+    AP_GROUPINFO("POSZ", 3, AP_NavEKF_Source, _source[0].posz, (int8_t)AP_NavEKF_Source::SourceZ::BARO),
 
     // @Param: VELZ
     // @DisplayName: Velocity Vertical Source
     // @Description: Velocity Vertical Source
     // @Values: 0:None, 3:GPS, 4:Beacon, 5:ExternalNav
     // @User: Advanced
-    AP_GROUPINFO("VELZ", 4, AP_NavEKF_Source, _velz_source1, 3),
+    AP_GROUPINFO("VELZ", 4, AP_NavEKF_Source, _source[0].velz, (int8_t)AP_NavEKF_Source::SourceZ::GPS),
 
     // @Param: YAW
     // @DisplayName: Yaw Source
     // @Description: Yaw Source
     // @Values: 0:None, 1:Compass, 2:External, 3:External with Compass Fallback
     // @User: Advanced
-    AP_GROUPINFO("YAW", 5, AP_NavEKF_Source, _yaw_source1, 1),
+    AP_GROUPINFO("YAW", 5, AP_NavEKF_Source, _source[0].yaw, (int8_t)AP_NavEKF_Source::SourceYaw::COMPASS),
 
     // @Param: POSXY2
     // @DisplayName: Position Horizontal Source (Secondary)
     // @Description: Position Horizontal Source (Secondary)
     // @Values: 0:None, 1:GPS, 2:Beacon, 4:ExternalNav
     // @User: Advanced
-    AP_GROUPINFO("POSXY2", 6, AP_NavEKF_Source, _posxy_source2, 0),
+    AP_GROUPINFO("POSXY2", 6, AP_NavEKF_Source, _source[1].posxy, (int8_t)AP_NavEKF_Source::SourceXY::GPS),
 
     // @Param: VELXY2
     // @DisplayName: Velocity Horizontal Source (Secondary)
     // @Description: Velocity Horizontal Source (Secondary)
     // @Values: 0:None, 1:GPS, 2:Beacon, 3:OpticalFlow, 4:ExternalNav
     // @User: Advanced
-    AP_GROUPINFO("VELXY2", 7, AP_NavEKF_Source, _velxy_source2, 1),
+    AP_GROUPINFO("VELXY2", 7, AP_NavEKF_Source, _source[1].velxy, (int8_t)AP_NavEKF_Source::SourceXY::GPS),
 
     // @Param: POSZ2
     // @DisplayName: Position Vertical Source (Secondary)
     // @Description: Position Vertical Source (Secondary)
     // @Values: 0:None, 1:Baro, 2:RangeFinder, 3:GPS, 4:Beacon, 5:ExternalNav
     // @User: Advanced
-    AP_GROUPINFO("POSZ2", 8, AP_NavEKF_Source, _posz_source2, 1),
+    AP_GROUPINFO("POSZ2", 8, AP_NavEKF_Source, _source[1].posz, (int8_t)AP_NavEKF_Source::SourceZ::BARO),
 
     // @Param: VELZ2
     // @DisplayName: Velocity Vertical Source (Secondary)
     // @Description: Velocity Vertical Source (Secondary)
     // @Values: 0:None, 3:GPS, 4:Beacon, 5:ExternalNav
     // @User: Advanced
-    AP_GROUPINFO("VELZ2", 9, AP_NavEKF_Source, _velz_source2, 3),
+    AP_GROUPINFO("VELZ2", 9, AP_NavEKF_Source, _source[1].velz, (int8_t)AP_NavEKF_Source::SourceZ::GPS),
 
     // @Param: YAW2
     // @DisplayName: Yaw Source (Secondary)
     // @Description: Yaw Source (Secondary)
     // @Values: 0:None, 1:Compass, 2:External, 3:External with Compass Fallback
     // @User: Advanced
-    AP_GROUPINFO("YAW2", 10, AP_NavEKF_Source, _yaw_source2, 1),
+    AP_GROUPINFO("YAW2", 10, AP_NavEKF_Source, _source[1].yaw, (int8_t)AP_NavEKF_Source::SourceYaw::COMPASS),
 
     AP_GROUPEND
 };
@@ -102,18 +102,18 @@ AP_NavEKF_Source::AP_NavEKF_Source()
 void AP_NavEKF_Source::init()
 {
     // ensure init is only run once
-    if (_initialised) {
+    if (_active_source.initialised) {
         return;
     }
 
     // initialise active sources
-    _active_posxy_source = (SourceXY)_posxy_source1.get();
-    _active_velxy_source = (SourceXY)_velxy_source1.get();
-    _active_posz_source = (SourceZ)_posz_source1.get();
-    _active_velz_source = (SourceZ)_velz_source1.get();
-    _active_yaw_source = (SourceYaw)_yaw_source1.get();
+    _active_source.posxy = (SourceXY)_source[0].posxy.get();
+    _active_source.velxy = (SourceXY)_source[0].velxy.get();
+    _active_source.posz = (SourceZ)_source[0].posz.get();
+    _active_source.velz = (SourceZ)_source[0].velz.get();
+    _active_source.yaw = (SourceYaw)_source[0].yaw.get();
 
-    _initialised = true;
+    _active_source.initialised = true;
 }
 
 // set position source to either 0=primary or 1=secondary
@@ -122,11 +122,11 @@ void AP_NavEKF_Source::setPosVelXYZSource(uint8_t source_idx)
     // ensure init has been run
     init();
 
-    _active_posxy_source = (source_idx == 1 ? (SourceXY)_posxy_source2.get() : (SourceXY)_posxy_source1.get());
-    _active_velxy_source = (source_idx == 1 ? (SourceXY)_velxy_source2.get() : (SourceXY)_velxy_source1.get());
-    _active_posz_source = (source_idx == 1 ? (SourceZ)_posz_source2.get() : (SourceZ)_posz_source1.get());
-    _active_velz_source = (source_idx == 1 ? (SourceZ)_velz_source2.get() : (SourceZ)_velz_source1.get());
-    _active_yaw_source = (source_idx == 1 ? (SourceYaw)_yaw_source2.get() : (SourceYaw)_yaw_source1.get());
+    _active_source.posxy = (source_idx == 1 ? (SourceXY)_source[1].posxy.get() : (SourceXY)_source[0].posxy.get());
+    _active_source.velxy = (source_idx == 1 ? (SourceXY)_source[1].velxy.get() : (SourceXY)_source[0].velxy.get());
+    _active_source.posz = (source_idx == 1 ? (SourceZ)_source[1].posz.get() : (SourceZ)_source[0].posz.get());
+    _active_source.velz = (source_idx == 1 ? (SourceZ)_source[1].velz.get() : (SourceZ)_source[0].velz.get());
+    _active_source.yaw = (source_idx == 1 ? (SourceYaw)_source[1].yaw.get() : (SourceYaw)_source[0].yaw.get());
 }
 
 // sensor specific helper functions

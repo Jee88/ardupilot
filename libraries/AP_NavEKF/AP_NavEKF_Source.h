@@ -4,6 +4,8 @@
 
 #include <AP_Param/AP_Param.h>
 
+#define AP_NAKEKF_SOURCE_COUNT 2    // two banks of sources
+
 class AP_NavEKF_Source
 {
 
@@ -43,19 +45,19 @@ public:
     void init();
 
     // get/set current position source
-    SourceXY getPosXYSource() const { return _initialised ? _active_posxy_source : (SourceXY)_posxy_source1.get(); }
-    SourceZ getPosZSource() const { return _initialised ? _active_posz_source : (SourceZ)_posz_source1.get() ; }
+    SourceXY getPosXYSource() const { return _active_source.initialised ? _active_source.posxy : (SourceXY)_source[0].posxy.get(); }
+    SourceZ getPosZSource() const { return _active_source.initialised ? _active_source.posz : (SourceZ)_source[0].posz.get() ; }
 
     // set position and velocity sources to either 0=primary or 1=secondary
     void setPosVelXYZSource(uint8_t source_idx);
 
     // get/set velocity source
-    SourceXY getVelXYSource() const { return _initialised ? _active_velxy_source : (SourceXY)_velxy_source1.get(); }
-    SourceZ getVelZSource() const { return _initialised ? _active_velz_source : (SourceZ)_velz_source1.get(); }
-    void setVelZSource(SourceZ source) { _active_velz_source = source; }
+    SourceXY getVelXYSource() const { return _active_source.initialised ? _active_source.velxy : (SourceXY)_source[0].velxy.get(); }
+    SourceZ getVelZSource() const { return _active_source.initialised ? _active_source.velz : (SourceZ)_source[0].velz.get(); }
+    void setVelZSource(SourceZ source) { _active_source.velz = source; }
 
     // get yaw source
-    SourceYaw getYawSource() const { return _initialised ? _active_yaw_source : (SourceYaw)_yaw_source1.get(); }
+    SourceYaw getYawSource() const { return _active_source.initialised ? _active_source.yaw : (SourceYaw)_source[0].yaw.get(); }
 
     // sensor specific helper functions
 
@@ -67,22 +69,21 @@ public:
 private:
 
     // Parameters
-    AP_Int8 _posxy_source1;     // primary xy position source
-    AP_Int8 _velxy_source1;     // primary xy velocity source
-    AP_Int8 _posz_source1;      // primary position z (aka altitude or height) source
-    AP_Int8 _velz_source1;      // primary velocity z source
-    AP_Int8 _yaw_source1;       // primary yaw source
-    AP_Int8 _posxy_source2;     // secondary xy position source
-    AP_Int8 _velxy_source2;     // secondary xy velocity source
-    AP_Int8 _posz_source2;      // position z (aka altitude or height) source
-    AP_Int8 _velz_source2;      // secondary velocity z source
-    AP_Int8 _yaw_source2;       // secondary yaw source
+    struct {
+        AP_Int8 posxy;  // xy position source
+        AP_Int8 velxy;  // xy velocity source
+        AP_Int8 posz;   // position z (aka altitude or height) source
+        AP_Int8 velz;   // velocity z source
+        AP_Int8 yaw;    // yaw source
+    } _source[AP_NAKEKF_SOURCE_COUNT];
 
     // active sources
-    bool _initialised;                      // true once init has been run
-    SourceXY _active_posxy_source;    // current xy position source
-    SourceZ _active_posz_source;      // current z position source
-    SourceXY _active_velxy_source;    // current xy velocity source
-    SourceZ _active_velz_source;      // current z velocity source
-    SourceYaw _active_yaw_source;     // current yaw source
+    struct {
+        bool initialised;   // true once init has been run
+        SourceXY posxy;     // current xy position source
+        SourceZ posz;       // current z position source
+        SourceXY velxy;     // current xy velocity source
+        SourceZ velz;       // current z velocity source
+        SourceYaw yaw;      // current yaw source
+    } _active_source;
 };
