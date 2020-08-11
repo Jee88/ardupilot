@@ -147,3 +147,81 @@ bool AP_NavEKF_Source::params_configured_in_storage() const
            _source[0].velz.configured_in_storage() ||
            _source[0].yaw.configured_in_storage();
 }
+
+// returns false if we fail arming checks, in which case the buffer will be populated with a failure message
+bool AP_NavEKF_Source::pre_arm_check(char *failure_msg, uint8_t failure_msg_len) const
+{
+    // check source params are valid
+    for (uint8_t i=0; i<AP_NAKEKF_SOURCE_COUNT; i++) {
+
+        // check posxy
+        switch (_source[i].posxy) {
+        case (int8_t)SourceXY::NONE:
+        case (int8_t)SourceXY::GPS:
+        case (int8_t)SourceXY::BEACON:
+        case (int8_t)SourceXY::EXTNAV:
+            break;
+        default:
+            // invalid posxy value
+            hal.util->snprintf(failure_msg, failure_msg_len, "Check EK3_SRC_POSXY%s", (i == 0) ? "" : "2");
+            return false;
+        }
+
+        // check velxy
+        switch (_source[i].velxy) {
+        case (int8_t)SourceXY::NONE:
+        case (int8_t)SourceXY::GPS:
+        case (int8_t)SourceXY::BEACON:
+        case (int8_t)SourceXY::OPTFLOW:
+        case (int8_t)SourceXY::EXTNAV:
+            break;
+        default:
+            // invalid velxy value
+            hal.util->snprintf(failure_msg, failure_msg_len, "Check EK3_SRC_VELXY%s", (i == 0) ? "" : "2");
+            return false;
+        }
+
+        // check posz
+        switch (_source[i].posz) {
+        case (int8_t)SourceZ::NONE:
+        case (int8_t)SourceZ::BARO:
+        case (int8_t)SourceZ::RANGEFINDER:
+        case (int8_t)SourceZ::GPS:
+        case (int8_t)SourceZ::BEACON:
+        case (int8_t)SourceZ::EXTNAV:
+            break;
+        default:
+            // invalid posz value
+            hal.util->snprintf(failure_msg, failure_msg_len, "Check EK3_SRC_POSZ%s", (i == 0) ? "" : "2");
+            return false;
+        }
+
+        // check velz
+        switch (_source[i].velz) {
+        case (int8_t)SourceZ::NONE:
+        case (int8_t)SourceZ::GPS:
+        case (int8_t)SourceZ::BEACON:
+        case (int8_t)SourceZ::EXTNAV:
+            break;
+        default:
+            // invalid posz value
+            hal.util->snprintf(failure_msg, failure_msg_len, "Check EK3_SRC_VELZ%s", (i == 0) ? "" : "2");
+            return false;
+        }
+
+        // check yaw
+        switch (_source[i].yaw) {
+        case (int8_t)SourceYaw::NONE:
+        case (int8_t)SourceYaw::COMPASS:
+        case (int8_t)SourceYaw::EXTERNAL:
+        case (int8_t)SourceYaw::EXTERNAL_COMPASS_FALLBACK:
+            break;
+        default:
+            // invalid posz value
+            hal.util->snprintf(failure_msg, failure_msg_len, "Check EK3_SRC_YAW%s", (i == 0) ? "" : "2");
+            return false;
+        }
+    }
+
+    return true;
+}
