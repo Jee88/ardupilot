@@ -24,28 +24,28 @@ const AP_Param::GroupInfo AP_NavEKF_Source::var_info[] = {
     // @Param: POSXY
     // @DisplayName: Position Horizontal Source (Primary)
     // @Description: Position Horizontal Source (Primary)
-    // @Values: 0:None, 1:GPS, 2:Beacon, 4:ExternalNav
+    // @Values: 0:None, 3:GPS, 4:Beacon, 6:ExternalNav
     // @User: Advanced
     AP_GROUPINFO("POSXY", 1, AP_NavEKF_Source, _source[0].posxy, (int8_t)AP_NavEKF_Source::SourceXY::GPS),
 
     // @Param: VELXY
     // @DisplayName: Velocity Horizontal Source
     // @Description: Velocity Horizontal Source
-    // @Values: 0:None, 1:GPS, 2:Beacon, 3:OpticalFlow, 4:ExternalNav
+    // @Values: 0:None, 3:GPS, 4:Beacon, 5:OpticalFlow, 6:ExternalNav
     // @User: Advanced
     AP_GROUPINFO("VELXY", 2, AP_NavEKF_Source, _source[0].velxy, (int8_t)AP_NavEKF_Source::SourceXY::GPS),
 
     // @Param: POSZ
     // @DisplayName: Position Vertical Source
     // @Description: Position Vertical Source
-    // @Values: 0:None, 1:Baro, 2:RangeFinder, 3:GPS, 4:Beacon, 5:ExternalNav
+    // @Values: 0:None, 1:Baro, 2:RangeFinder, 3:GPS, 4:Beacon, 6:ExternalNav
     // @User: Advanced
     AP_GROUPINFO("POSZ", 3, AP_NavEKF_Source, _source[0].posz, (int8_t)AP_NavEKF_Source::SourceZ::BARO),
 
     // @Param: VELZ
     // @DisplayName: Velocity Vertical Source
     // @Description: Velocity Vertical Source
-    // @Values: 0:None, 3:GPS, 4:Beacon, 5:ExternalNav
+    // @Values: 0:None, 3:GPS, 4:Beacon, 6:ExternalNav
     // @User: Advanced
     AP_GROUPINFO("VELZ", 4, AP_NavEKF_Source, _source[0].velz, (int8_t)AP_NavEKF_Source::SourceZ::GPS),
 
@@ -59,28 +59,28 @@ const AP_Param::GroupInfo AP_NavEKF_Source::var_info[] = {
     // @Param: POSXY2
     // @DisplayName: Position Horizontal Source (Secondary)
     // @Description: Position Horizontal Source (Secondary)
-    // @Values: 0:None, 1:GPS, 2:Beacon, 4:ExternalNav
+    // @Values: 0:None, 3:GPS, 4:Beacon, 6:ExternalNav
     // @User: Advanced
     AP_GROUPINFO("POSXY2", 6, AP_NavEKF_Source, _source[1].posxy, (int8_t)AP_NavEKF_Source::SourceXY::GPS),
 
     // @Param: VELXY2
     // @DisplayName: Velocity Horizontal Source (Secondary)
     // @Description: Velocity Horizontal Source (Secondary)
-    // @Values: 0:None, 1:GPS, 2:Beacon, 3:OpticalFlow, 4:ExternalNav
+    // @Values: 0:None, 3:GPS, 4:Beacon, 5:OpticalFlow, 6:ExternalNav
     // @User: Advanced
     AP_GROUPINFO("VELXY2", 7, AP_NavEKF_Source, _source[1].velxy, (int8_t)AP_NavEKF_Source::SourceXY::GPS),
 
     // @Param: POSZ2
     // @DisplayName: Position Vertical Source (Secondary)
     // @Description: Position Vertical Source (Secondary)
-    // @Values: 0:None, 1:Baro, 2:RangeFinder, 3:GPS, 4:Beacon, 5:ExternalNav
+    // @Values: 0:None, 1:Baro, 2:RangeFinder, 3:GPS, 4:Beacon, 6:ExternalNav
     // @User: Advanced
     AP_GROUPINFO("POSZ2", 8, AP_NavEKF_Source, _source[1].posz, (int8_t)AP_NavEKF_Source::SourceZ::BARO),
 
     // @Param: VELZ2
     // @DisplayName: Velocity Vertical Source (Secondary)
     // @Description: Velocity Vertical Source (Secondary)
-    // @Values: 0:None, 3:GPS, 4:Beacon, 5:ExternalNav
+    // @Values: 0:None, 3:GPS, 4:Beacon, 6:ExternalNav
     // @User: Advanced
     AP_GROUPINFO("VELZ2", 9, AP_NavEKF_Source, _source[1].velz, (int8_t)AP_NavEKF_Source::SourceZ::GPS),
 

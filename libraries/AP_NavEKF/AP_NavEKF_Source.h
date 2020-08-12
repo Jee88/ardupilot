@@ -19,10 +19,12 @@ public:
 
     enum class SourceXY {
         NONE = 0,
-        GPS = 1,
-        BEACON = 2,
-        OPTFLOW = 3,
-        EXTNAV = 4
+        // BARO = 1 (not applicable)
+        // RANGEFINDER = 2 (not applicable)
+        GPS = 3,
+        BEACON = 4,
+        OPTFLOW = 5,
+        EXTNAV = 6
     };
 
     enum class SourceZ {
@@ -31,7 +33,8 @@ public:
         RANGEFINDER = 2,
         GPS = 3,
         BEACON = 4,
-        EXTNAV = 5
+        // OPTFLOW = 5 (not applicable)
+        EXTNAV = 6
     };
 
     enum class SourceYaw {
