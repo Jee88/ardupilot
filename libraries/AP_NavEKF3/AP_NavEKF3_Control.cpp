@@ -435,6 +435,10 @@ bool NavEKF3_core::useRngFinder(void) const
 // return true if the filter is ready to start using optical flow measurements
 bool NavEKF3_core::readyToUseOptFlow(void) const
 {
+    if (frontend->_sources.getVelXYSource() != AP_NavEKF_Source::SourceXY::OPTFLOW) {
+        return false;
+    }
+
     // We need stable roll/pitch angles and gyro bias estimates but do not need the yaw angle aligned to use optical flow
     return (imuSampleTime_ms - flowMeaTime_ms < 200) && tiltAlignComplete && delAngBiasLearned;
 }
